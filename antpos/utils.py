@@ -61,7 +61,7 @@ def get_baselines(antenna_order,casa_order=True,autocorrs=False):
     nant = len(antenna_order)
     df = get_itrf()
     df_bls = pandas.DataFrame(columns=['bname','x_m','y_m','z_m'])
-    for i in np.arange(1,nant):
+    for i in np.arange(1 if not autocorrs else 0,nant):
         for j in np.arange(i if not autocorrs else i+1):
             a1 = antenna_order[i]
             a2 = antenna_order[j]
