@@ -83,35 +83,3 @@ def get_baselines(antenna_order,casa_order=True,autocorrs=False):
         df_bls.reset_index(inplace=True,drop=True)
     return df_bls
                                           
-def get_days_per_frb(nant=20,srch_efficiency=0.9,threshold=10.0,beam_correct=True):
-    """Implements James+19 and Bhandari+18 FRB fluence distribution
-    to derive the days per FRB detection for different nant. All 
-    efficiencies (bf, srch code, etc) are folded into the 
-    srch_efficiency parameter. Hardcoded for DSA-110 using latest 
-    SEFD estimate. beam_correct lowers sensitivity by x2."""
-
-    sefd = 6500.0/(1.*nant) # Jy
-    bw = 200.0 # MHz    
-    fluence_thresh = threshold*(sefd/srch_efficiency)/np.sqrt(2.*0.001*bw*1e6)
-
-    if beam_correct:
-        fluence_thresh *= 2.
-    
-    Fb = 15. # Jy ms
-    F0 = 2. # Jy ms
-    R0 = 1700 # per sky per day above F0
-    a1 = -1.2
-    a2 = -2.2
-    Rb = R0*(Fb/F0)**(a1)
-
-    fov_sky = 11./41253.
-    
-    if fluence_thresh>=Rb:
-        return 1./(fov_sky*Rb*(fluence_thresh/Fb)**(a2))
-    return 1./(fov_sky*R0*(fluence_thresh/F0)**(a1))
-
-
-
-
-
-    
