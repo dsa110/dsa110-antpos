@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.com/dsa110/dsa110-antpos.svg?branch=casa-dev)](https://travis-ci.com/dsa110/dsa110-antpos)
+[![Build Status](https://travis-ci.com/dsa110/dsa110-antpos.svg?branch=master)](https://travis-ci.com/dsa110/dsa110-antpos)
 [![codecov](https://codecov.io/gh/dsa110/dsa110-antpos/branch/casa-dev/graph/badge.svg)](https://codecov.io/gh/dsa110/dsa110-antpos)
 
 # dsa110-antpos
