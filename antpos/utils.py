@@ -3,6 +3,10 @@ import antpos
 from astropy.coordinates import EarthLocation
 import astropy.units as u
 import numpy as np
+import dsautils.dsa_syslog as dsl
+logger = dsl.DsaSyslogger()
+logger.subsystem('software')
+logger.app('antpos')
 
 def __init__():
     return
@@ -54,8 +58,9 @@ def get_itrf(csvfile='{0}/data/DSA110_positions_RevE.csv'.format(antpos.__path__
     try:
         idxs = np.genfromtxt(stations,dtype=np.int,delimiter=',')
         df = df.loc[idxs]
+        logger.info('Getting ITRF positions for {0} antennas'.format(len(idxs)))
     except:
-        print('Cannot read antenna IDs - returning all antennas')
+        logger.info('Cannot read antenna IDs - returning all antennas')
     
     return df
 
@@ -106,7 +111,7 @@ def get_days_per_frb(nant=20,srch_efficiency=0.9,threshold=10.0,beam_correct=Tru
 
     fov_sky = 11./41253.
     
-    if fluence_thresh>=Rb:
+    if fluence_thresh>=Fb:
         return 1./(fov_sky*Rb*(fluence_thresh/Fb)**(a2))
     return 1./(fov_sky*R0*(fluence_thresh/F0)**(a1))
 
