@@ -8,10 +8,14 @@ logger = dsl.DsaSyslogger()
 logger.subsystem('software')
 logger.app('antpos')
 
+from pkg_resources import Requirement, resource_filename
+antposfile = resource_filename("antpos", "data/DSA110_positions_RevE.csv")
+antidfile = resource_filename("antpos", "data/ant_ids.csv")
+
 def __init__():
     return
 
-def tee_centers(csvfile='{0}/data/DSA110_positions_RevE.csv'.format(antpos.__path__[0])):
+def tee_centers(csvfile=antposfile):
     """ Read positions of DSA110 Tee center and return as tuple.
     """
 
@@ -21,7 +25,7 @@ def tee_centers(csvfile='{0}/data/DSA110_positions_RevE.csv'.format(antpos.__pat
 
     return (tc_latitude, tc_longitude)
 
-def get_lonlat(csvfile='{0}/data/DSA110_positions_RevE.csv'.format(antpos.__path__[0]), headerline=13):
+def get_lonlat(csvfile=antposfile, headerline=13):
     """ Read positions of all antennas from DSA110 CSV file.
     """
 
@@ -38,9 +42,8 @@ def get_lonlat(csvfile='{0}/data/DSA110_positions_RevE.csv'.format(antpos.__path
     
     return df
 
-def get_itrf(csvfile='{0}/data/DSA110_positions_RevE.csv'.format(antpos.__path__[0]),
-             headerline=13,height=1222*u.m,
-             stations='{0}/data/ant_ids.csv'.format(antpos.__path__[0])):
+def get_itrf(csvfile=antposfile, headerline=13,height=1222*u.m,
+             stations=antidfile):
     """Read positions of all antennas from DSA110 CSV file and 
     convert to ITRF coordinates. Only provides active stations."""
 
