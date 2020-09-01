@@ -7,7 +7,7 @@ import numpy as np
 def __init__():
     return
 
-def tee_centers(csvfile='{0}/data/DSA110_positions_RevD.csv'.format(antpos.__path__[0])):
+def tee_centers(csvfile='{0}/data/DSA110_positions_RevE.csv'.format(antpos.__path__[0])):
     """ Read positions of DSA110 Tee center and return as tuple.
     """
 
@@ -17,7 +17,7 @@ def tee_centers(csvfile='{0}/data/DSA110_positions_RevD.csv'.format(antpos.__pat
 
     return (tc_latitude, tc_longitude)
 
-def get_lonlat(csvfile='{0}/data/DSA110_positions_RevD.csv'.format(antpos.__path__[0]), headerline=13):
+def get_lonlat(csvfile='{0}/data/DSA110_positions_RevE.csv'.format(antpos.__path__[0]), headerline=13):
     """ Read positions of all antennas from DSA110 CSV file.
     """
 
@@ -34,7 +34,7 @@ def get_lonlat(csvfile='{0}/data/DSA110_positions_RevD.csv'.format(antpos.__path
     
     return df
 
-def get_itrf(csvfile='{0}/data/DSA110_positions_RevD.csv'.format(antpos.__path__[0]),
+def get_itrf(csvfile='{0}/data/DSA110_positions_RevE.csv'.format(antpos.__path__[0]),
              headerline=13,height=1222*u.m):
     """Read positions of all antennas from DSA110 CSV file and 
     convert to ITRF coordinates."""
@@ -69,7 +69,7 @@ def get_baselines(antenna_order,casa_order=True,autocorrs=False):
             df_bls = df_bls.append({'bname':'{0}-{1}'.format(a1,a2),
                            'x_m':df.loc[a1]['x_m']-df.loc[a2]['x_m'],
                            'y_m':df.loc[a1]['y_m']-df.loc[a2]['y_m'],
-                                   'z_m':df.loc[a1]['z_m']-df.loc[a2]['z_m']},
+                           'z_m':df.loc[a1]['z_m']-df.loc[a2]['z_m']},
                           ignore_index=True)
     if casa_order:
         df_bls = df_bls.iloc[::-1]
