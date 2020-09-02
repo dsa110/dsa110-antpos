@@ -30,8 +30,8 @@ def get_lonlat(csvfile='{0}/data/DSA110_positions_RevE.csv'.format(antpos.__path
     df['Station Number'] = stations
     df['Latitude'] = latitude
     df['Longitude'] = longitude
+    df.sort_values(by=['Station Number'], inplace=True)
     df.set_index('Station Number', inplace=True)
-    
     return df
 
 def get_itrf(csvfile='{0}/data/DSA110_positions_RevE.csv'.format(antpos.__path__[0]),
