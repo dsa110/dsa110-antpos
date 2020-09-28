@@ -9,6 +9,7 @@ branches:
   only:
   - master
   - development
+  - ds/dev
 
 install:
 #  - sudo apt-get update -y
