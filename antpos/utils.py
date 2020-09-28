@@ -9,7 +9,7 @@ logger.subsystem('software')
 logger.app('antpos')
 
 from pkg_resources import Requirement, resource_filename
-antposfile = resource_filename("antpos", "data/DSA110_positions_RevE.csv")
+antposfile = resource_filename("antpos", "data/DSA110_positions_RevF.csv")
 antidfile = resource_filename("antpos", "data/ant_ids.csv")
 
 def __init__():
