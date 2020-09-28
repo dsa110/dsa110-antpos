@@ -3,12 +3,8 @@ import antpos
 from astropy.coordinates import EarthLocation
 import astropy.units as u
 import numpy as np
-import dsautils.dsa_syslog as dsl
-logger = dsl.DsaSyslogger()
-logger.subsystem('software')
-logger.app('antpos')
 
-from pkg_resources import Requirement, resource_filename
+from pkg_resources import resource_filename
 antposfile = resource_filename("antpos", "data/DSA110_positions_RevF.csv")
 antidfile = resource_filename("antpos", "data/ant_ids.csv")
 
