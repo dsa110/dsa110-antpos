@@ -2,21 +2,15 @@ import random
 import astropy.units as u
 from antpos import utils
 from pkg_resources import Requirement, resource_filename
-<<<<<<< HEAD
-antposfile = resource_filename("antpos", "data/DSA110_positions_RevD.csv")
-=======
-antposfile = resource_filename(Requirement.parse("dsa110-antpos"), "antpos/data/DSA110_positions_RevE.csv")
->>>>>>> master
+
+antposfile = resource_filename(Requirement.parse("dsa110-antpos"), "antpos/data/DSA110_positions_RevF.csv")
 
 def test_get():
     df = utils.get_itrf(csvfile=antposfile)
 
-<<<<<<< HEAD
 def test_frb():
     days = utils.get_days_per_frb(nant=100,beam_correct=False)
 
-
-=======
 def test_get_itrf():
     df = utils.get_itrf()
     ovro_lon = -118.283400*u.deg
@@ -42,4 +36,3 @@ def test_get_baselines():
     df_bls = utils.get_baselines(antenna_order, casa_order=True)
     assert df_bls['bname'][(nant*(nant-1))//2-1] == '{0}-{1}'.format(antenna_order[1],
                                                    antenna_order[0])
->>>>>>> master

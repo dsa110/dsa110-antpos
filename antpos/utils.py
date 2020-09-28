@@ -38,11 +38,17 @@ def get_lonlat(csvfile=antposfile, headerline=13):
     df['Station Number'] = stations
     df['Latitude'] = latitude
     df['Longitude'] = longitude
+    for st_no in ['200E', '200W']:
+        idx_to_drop = np.where(df['Station Number'] == st_no)[0]
+        if len(idx_to_drop > 0):
+            df.drop(idx_to_drop[0], inplace=True)
+    df = df.astype({'Station Number': np.int32})
     df.sort_values(by=['Station Number'], inplace=True)
     df.set_index('Station Number', inplace=True)
     return df
 
-def get_itrf(csvfile=antposfile, headerline=13, stations=antidfile, height=None, latlon_center=None):
+def get_itrf(csvfile=antposfile, headerline=13, height=None, latlon_center=None,
+             return_all_stations=True, stations=antidfile):
     """Read positions of all antennas from DSA110 CSV file and 
     convert to ITRF coordinates. Only provides active stations."""
     if height is None:
@@ -62,13 +68,10 @@ def get_itrf(csvfile=antposfile, headerline=13, stations=antidfile, height=None,
     df['dy_m'] = (EarthLocation(lat=df['Latitude'], lon=df['Longitude'], height=height).y-center.y).to_value(u.m)
     df['dz_m'] = (EarthLocation(lat=df['Latitude'], lon=df['Longitude'], height=height).z-center.z).to_value(u.m)
 
-    try:
-        idxs = np.genfromtxt(stations,dtype=np.int,delimiter=',')
+    if not return_all_stations:
+        idxs = np.genfromtxt(stations, dtype=np.int, delimiter=',')
         df = df.loc[idxs]
-        logger.info('Getting ITRF positions for {0} antennas'.format(len(idxs)))
-    except:
-        logger.info('Cannot read antenna IDs - returning all antennas')
-    
+
     return df
 
 def get_baselines(antenna_order, casa_order=True, autocorrs=False):
