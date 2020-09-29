@@ -1,9 +1,11 @@
 import random
 import astropy.units as u
 from antpos import utils
+import antpos
 from pkg_resources import Requirement, resource_filename
 
-antposfile = resource_filename(Requirement.parse("dsa110-antpos"), "antpos/data/DSA110_positions_RevF.csv")
+#antposfile = resource_filename(Requirement.parse("dsa110-antpos"), "dsa110-antpos/antpos/data/DSA110_Station_Coordinates.csv")
+antposfile = antpos.__path__[0] + "/data/DSA110_Station_Coordinates.csv"
 
 def test_get():
     df = utils.get_itrf(csvfile=antposfile)

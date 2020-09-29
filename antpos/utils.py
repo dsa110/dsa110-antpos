@@ -20,22 +20,25 @@ def tee_centers(csvfile=antposfile):
 #    tc_latitude  = float(tab0.iloc[4][3])
 #    tc_longitude = float(tab0.iloc[5][3])
     tab0         = pandas.read_csv(csvfile, skiprows=6)  # sep 2020 version
-    tc_longitude = float(tab0.iloc[:,2])
-    tc_longitude = float(tab0.iloc[:,3])
+    tc_latitude = tab0.iloc[3,2]
+    tc_longitude = tab0.iloc[3,3]
 
     return (tc_latitude, tc_longitude)
 
-def get_lonlat(csvfile=antposfile, headerline=13):
+def get_lonlat(csvfile=antposfile, headerline=5):
     """ Read positions of all antennas from DSA110 CSV file.
     """
 
     tab       = pandas.read_csv(csvfile, header=headerline)
-    stations  = pandas.concat([tab['Station Number'], tab['Station Number.1']])
-    latitude  = pandas.concat([tab['Latitude'], tab['Latitude.1']])
-    longitude = pandas.concat([tab['Longitude'], tab['Longitude.1']])
+#    stations  = pandas.concat([tab['Station Number'], tab['Station Number.1']])
+#    latitude  = pandas.concat([tab['Latitude'], tab['Latitude.1']])
+#    longitude = pandas.concat([tab['Longitude'], tab['Longitude.1']])
+    stations  = tab['Station Number']
+    latitude  = tab['Latitude']
+    longitude = tab['Longitude']
 
     df = pandas.DataFrame()
-    df['Station Number'] = stations
+    df['Station Number'] = [int(station.split('-')[1]) for station in stations]
     df['Latitude'] = latitude
     df['Longitude'] = longitude
     for st_no in ['200E', '200W']:
@@ -47,10 +50,11 @@ def get_lonlat(csvfile=antposfile, headerline=13):
     df.set_index('Station Number', inplace=True)
     return df
 
-def get_itrf(csvfile=antposfile, headerline=13, height=None, latlon_center=None,
+def get_itrf(csvfile=antposfile, height=None, latlon_center=None,
              return_all_stations=True, stations=antidfile):
     """Read positions of all antennas from DSA110 CSV file and 
     convert to ITRF coordinates. Only provides active stations."""
+
     if height is None:
         height = 1222*u.m
     if latlon_center is None:
@@ -58,7 +62,7 @@ def get_itrf(csvfile=antposfile, headerline=13, height=None, latlon_center=None,
     else:
         (latcenter, loncenter) = latlon_center
 
-    df = get_lonlat(csvfile, headerline)
+    df = get_lonlat(csvfile)
     center = EarthLocation(lat=latcenter, lon=loncenter, height=height)
     df['x_m'] = EarthLocation(lat=df['Latitude'], lon=df['Longitude'], height=height).x.to_value(u.m)
     df['y_m'] = EarthLocation(lat=df['Latitude'], lon=df['Longitude'], height=height).y.to_value(u.m)
