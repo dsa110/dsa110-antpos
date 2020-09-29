@@ -5,7 +5,8 @@ import astropy.units as u
 import numpy as np
 
 from pkg_resources import resource_filename
-antposfile = resource_filename("antpos", "data/DSA110_positions_RevF.csv")
+#antposfile = resource_filename("antpos", "data/DSA110_positions_RevF.csv")  # early 2020 versions
+antposfile = resource_filename("antpos", "data/DSA110_Station_Coordinates.csv")  # sep 2020 version
 antidfile = resource_filename("antpos", "data/ant_ids.csv")
 
 def __init__():
@@ -15,9 +16,12 @@ def tee_centers(csvfile=antposfile):
     """ Read positions of DSA110 Tee center and return as tuple.
     """
 
-    tab0         = pandas.read_csv(csvfile)
-    tc_latitude  = float(tab0.iloc[4][3])
-    tc_longitude = float(tab0.iloc[5][3])
+#    tab0         = pandas.read_csv(csvfile)   # early 2020 versions
+#    tc_latitude  = float(tab0.iloc[4][3])
+#    tc_longitude = float(tab0.iloc[5][3])
+    tab0         = pandas.read_csv(csvfile, skiprows=6)  # sep 2020 version
+    tc_longitude = float(tab0.iloc[:,2])
+    tc_longitude = float(tab0.iloc[:,3])
 
     return (tc_latitude, tc_longitude)
 
