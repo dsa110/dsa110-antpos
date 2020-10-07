@@ -89,8 +89,8 @@ def get_baselines(antenna_order, casa_order=True, autocorrs=False):
     df_bls = pandas.DataFrame(columns=['bname','x_m','y_m','z_m'])
     for i in np.arange(1 if not autocorrs else 0, nant):
         for j in np.arange(i if not autocorrs else i+1):
-            a1 = antenna_order[i]
-            a2 = antenna_order[j]
+            a1 = antenna_order[j]
+            a2 = antenna_order[i]
             df_bls = df_bls.append(
                 {'bname':'{0}-{1}'.format(a1,a2),
                  'x_m':df.loc[a1]['x_m']-df.loc[a2]['x_m'],
