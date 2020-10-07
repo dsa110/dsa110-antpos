@@ -27,8 +27,10 @@ def test_get_baselines():
     assert len(df_bls['bname']) == len(df_bls['z_m'])
     df_bls = utils.get_baselines(antenna_order, autocorrs=False, casa_order=False)
     assert len(df_bls['bname']) == (nant*(nant-1))//2
-    assert df_bls['bname'][0] == '{0}-{1}'.format(antenna_order[1],
-                                                   antenna_order[0])
+    assert df_bls['bname'][0] == '{0}-{1}'.format(antenna_order[0],
+                                                   antenna_order[1])
     df_bls = utils.get_baselines(antenna_order, casa_order=True)
-    assert df_bls['bname'][(nant*(nant-1))//2-1] == '{0}-{1}'.format(antenna_order[1],
-                                                   antenna_order[0])
+    print(antenna_order)
+    print(df_bls['bname'][(nant*(nant-1))//2-1])
+    assert df_bls['bname'][(nant*(nant-1))//2-1] == '{0}-{1}'.format(antenna_order[0],
+                                                   antenna_order[1])
