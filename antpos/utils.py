@@ -72,9 +72,9 @@ def get_baselines(antenna_order, casa_order=True, autocorrs=False):
             a2 = antenna_order[i]
             df_bls = df_bls.append(
                 {'bname':'{0}-{1}'.format(a1,a2),
-                 'x_m':df.loc[a1]['x_m']-df.loc[a2]['x_m'],
-                 'y_m':df.loc[a1]['y_m']-df.loc[a2]['y_m'],
-                 'z_m':df.loc[a1]['z_m']-df.loc[a2]['z_m']},
+                 'x_m':df.loc[a2]['x_m']-df.loc[a1]['x_m'],
+                 'y_m':df.loc[a2]['y_m']-df.loc[a1]['y_m'],
+                 'z_m':df.loc[a2]['z_m']-df.loc[a1]['z_m']},
                  ignore_index=True)
     if casa_order:
         df_bls = df_bls.iloc[::-1]
