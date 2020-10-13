@@ -1,7 +1,0 @@
-from antpos import utils
-
-from pkg_resources import Requirement, resource_filename
-antposfile = resource_filename(Requirement.parse("dsa110-antpos"), "data/antpos_ITRF.txt")
-
-def test_get():
-    df = utils.get_itrf(csvfile=antposfile)
