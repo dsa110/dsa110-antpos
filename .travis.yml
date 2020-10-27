@@ -9,6 +9,7 @@ branches:
   only:
   - master
   - development
+  - ds/dev
 
 install:
 #  - sudo apt-get update -y
@@ -27,7 +28,7 @@ script:
 
 after_success:
   - coverage report
-  - codecov
+  - codecov --token=e8064661-6821-441b-b73b-678a1df0a516
 
 notifications:
   email: false
