@@ -20,7 +20,7 @@ def tee_centers():
 
     return (tc_latitude, tc_longitude, tc_height)
 
-def get_lonlat(csvfile=antposfile, headerline=5):
+def get_lonlat(csvfile=antposfile, headerline=5, defaultheight=1182.6000):
     """ Read positions of all antennas from DSA110 CSV file.
     """
 
@@ -34,7 +34,8 @@ def get_lonlat(csvfile=antposfile, headerline=5):
     df['Station Number'] = [int(station.split('-')[1]) for station in stations]
     df['Latitude'] = latitude
     df['Longitude'] = longitude
-    df['Height (m)'] = height 
+    df['Height (m)'] = height
+    df['Height (m)'] = np.where(np.isnan(df['Height (m)']), defaultheight, df['Height (m)'])
     for st_no in ['200E', '200W']:
         idx_to_drop = np.where(df['Station Number'] == st_no)[0]
         if len(idx_to_drop > 0):
