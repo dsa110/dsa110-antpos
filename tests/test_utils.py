@@ -18,7 +18,7 @@ def test_get_itrf():
     ovro_lon = -118.283400*u.deg
     ovro_lat = 37.233386*u.deg
     ovro_height = 1188*u.m
-    df = utils.get_itrf(height=ovro_height, latlon_center=(ovro_lat, ovro_lon))
+    df = utils.get_itrf(latlon_center=(ovro_lat, ovro_lon, ovro_height))
 
 def test_get_baselines():
     df = utils.get_lonlat()

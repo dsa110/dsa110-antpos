@@ -5,42 +5,37 @@ import astropy.units as u
 import numpy as np
 
 from pkg_resources import resource_filename
-#antposfile = resource_filename("antpos", "data/DSA110_positions_RevF.csv")  # early 2020 versions
-antposfile = resource_filename("antpos", "data/DSA110_Station_Coordinates.csv")  # sep 2020 version
+antposfile = resource_filename("antpos", "data/DSA110_Station_Coordinates.csv")
 antidfile = resource_filename("antpos", "data/ant_ids.csv")
 
 def __init__():
     return
 
-def tee_centers(csvfile=antposfile):
+def tee_centers():
     """ Read positions of DSA110 Tee center and return as tuple.
     """
+    tc_longitude = -2.064427799136453*u.rad
+    tc_latitude = 0.6498455107238486*u.rad
+    tc_height = 1188.0519*u.m
 
-#    tab0         = pandas.read_csv(csvfile)   # early 2020 versions
-#    tc_latitude  = float(tab0.iloc[4][3])
-#    tc_longitude = float(tab0.iloc[5][3])
-    tab0         = pandas.read_csv(csvfile, skiprows=6)  # sep 2020 version
-    tc_latitude = tab0.iloc[3,2]
-    tc_longitude = tab0.iloc[3,3]
+    return (tc_latitude, tc_longitude, tc_height)
 
-    return (tc_latitude, tc_longitude)
-
-def get_lonlat(csvfile=antposfile, headerline=5):
+def get_lonlat(csvfile=antposfile, headerline=5, defaultheight=1182.6000):
     """ Read positions of all antennas from DSA110 CSV file.
     """
 
     tab       = pandas.read_csv(csvfile, header=headerline)
-#    stations  = pandas.concat([tab['Station Number'], tab['Station Number.1']])
-#    latitude  = pandas.concat([tab['Latitude'], tab['Latitude.1']])
-#    longitude = pandas.concat([tab['Longitude'], tab['Longitude.1']])
     stations  = tab['Station Number']
     latitude  = tab['Latitude']
     longitude = tab['Longitude']
+    height = tab['Elevation (meters)']
 
     df = pandas.DataFrame()
     df['Station Number'] = [int(station.split('-')[1]) for station in stations]
     df['Latitude'] = latitude
     df['Longitude'] = longitude
+    df['Height (m)'] = height
+    df['Height (m)'] = np.where(np.isnan(df['Height (m)']), defaultheight, df['Height (m)'])
     for st_no in ['200E', '200W']:
         idx_to_drop = np.where(df['Station Number'] == st_no)[0]
         if len(idx_to_drop > 0):
@@ -50,27 +45,26 @@ def get_lonlat(csvfile=antposfile, headerline=5):
     df.set_index('Station Number', inplace=True)
     return df
 
-def get_itrf(csvfile=antposfile, height=None, latlon_center=None,
+def get_itrf(csvfile=antposfile, latlon_center=None,
              return_all_stations=True, stations=antidfile):
     """Read positions of all antennas from DSA110 CSV file and 
     convert to ITRF coordinates. Only provides active stations."""
 
-    if height is None:
-        height = 1222*u.m
     if latlon_center is None:
-        (latcenter, loncenter) = tee_centers()
+        (latcenter, loncenter, heightcenter) = tee_centers()
     else:
-        (latcenter, loncenter) = latlon_center
+        (latcenter, loncenter, heightcenter) = latlon_center
 
     df = get_lonlat(csvfile)
-    center = EarthLocation(lat=latcenter, lon=loncenter, height=height)
-    df['x_m'] = EarthLocation(lat=df['Latitude'], lon=df['Longitude'], height=height).x.to_value(u.m)
-    df['y_m'] = EarthLocation(lat=df['Latitude'], lon=df['Longitude'], height=height).y.to_value(u.m)
-    df['z_m'] = EarthLocation(lat=df['Latitude'], lon=df['Longitude'], height=height).z.to_value(u.m)
+    center = EarthLocation(lat=latcenter, lon=loncenter, height=heightcenter)
+    locations = EarthLocation(lat=df['Latitude'], lon=df['Longitude'], height=df['Height (m)']*u.m)
+    df['x_m'] = locations.x.to_value(u.m)
+    df['y_m'] = locations.y.to_value(u.m)
+    df['z_m'] = locations.z.to_value(u.m)
 
-    df['dx_m'] = (EarthLocation(lat=df['Latitude'], lon=df['Longitude'], height=height).x-center.x).to_value(u.m)
-    df['dy_m'] = (EarthLocation(lat=df['Latitude'], lon=df['Longitude'], height=height).y-center.y).to_value(u.m)
-    df['dz_m'] = (EarthLocation(lat=df['Latitude'], lon=df['Longitude'], height=height).z-center.z).to_value(u.m)
+    df['dx_m'] = (locations.x-center.x).to_value(u.m)
+    df['dy_m'] = (locations.y-center.y).to_value(u.m)
+    df['dz_m'] = (locations.z-center.z).to_value(u.m)
 
     if not return_all_stations:
         idxs = np.genfromtxt(stations, dtype=np.int, delimiter=',')
