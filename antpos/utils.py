@@ -82,13 +82,13 @@ def get_baselines(antenna_order, casa_order=True, autocorrs=False):
     nant = len(antenna_order)
     df = get_itrf()
     df_bls = []
-    baseline = namedtuple('baseline', 'bname x_m y_m z_m')
+    Baseline = namedtuple('baseline', 'bname x_m y_m z_m')
     for i in np.arange(1 if not autocorrs else 0, nant):
         for j in np.arange(i if not autocorrs else i+1):
             a1 = antenna_order[j]
             a2 = antenna_order[i]
             df_bls.append(
-                baseline(
+                Baseline(
                     '{0}-{1}'.format(int(a1), int(a2)),
                     df.loc[a2]['x_m']-df.loc[a1]['x_m'],
                     df.loc[a2]['y_m']-df.loc[a1]['y_m'],
