@@ -1,5 +1,5 @@
-[![Build Status](https://travis-ci.com/dsa110/dsa110-antpos.svg?branch=master)](https://travis-ci.com/dsa110/dsa110-antpos)
-[![codecov](https://codecov.io/gh/dsa110/dsa110-antpos/branch/casa-dev/graph/badge.svg)](https://codecov.io/gh/dsa110/dsa110-antpos)
+![build](https://github.com/dsa110/dsa110-antpos/actions/workflows/build_with_conda.yml/badge.svg)
+[![codecov](https://codecov.io/gh/dsa110/dsa110-antpos/branch/main/graph/badge.svg)](https://codecov.io/gh/dsa110/dsa110-antpos)
 
 # dsa110-antpos
 
