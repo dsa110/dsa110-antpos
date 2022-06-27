@@ -1,4 +1,5 @@
 import pandas
+from collections import namedtuple
 import antpos
 from astropy.coordinates import EarthLocation
 import astropy.units as u
@@ -80,20 +81,24 @@ def get_baselines(antenna_order, casa_order=True, autocorrs=False):
     # from the correlator.
     nant = len(antenna_order)
     df = get_itrf()
-    df_bls = pandas.DataFrame(columns=['bname','x_m','y_m','z_m'])
+    df_bls = []
+    baseline = namedtuple('baseline', 'bname x_m y_m z_m')
     for i in np.arange(1 if not autocorrs else 0, nant):
         for j in np.arange(i if not autocorrs else i+1):
             a1 = antenna_order[j]
             a2 = antenna_order[i]
-            df_bls = df_bls.append(
-                {'bname':'{0}-{1}'.format(int(a1), int(a2)),
-                 'x_m':df.loc[a2]['x_m']-df.loc[a1]['x_m'],
-                 'y_m':df.loc[a2]['y_m']-df.loc[a1]['y_m'],
-                 'z_m':df.loc[a2]['z_m']-df.loc[a1]['z_m']},
-                 ignore_index=True)
+            df_bls.append(
+                baseline(
+                    '{0}-{1}'.format(int(a1), int(a2)),
+                    df.loc[a2]['x_m']-df.loc[a1]['x_m'],
+                    df.loc[a2]['y_m']-df.loc[a1]['y_m'],
+                    df.loc[a2]['z_m']-df.loc[a1]['z_m'],
+            ))
     if casa_order:
-        df_bls = df_bls.iloc[::-1]
-        df_bls.reset_index(inplace=True, drop=True)
+        df_bls = df_bls[::-1]
+    
+    df_bls = pandas.DataFrame.from_records(df_bls, columns=['bname','x_m','y_m','z_m'])
+
     return df_bls
                                           
 def get_days_per_frb(nant=20,srch_efficiency=0.9,threshold=10.0,beam_correct=True):
